@@ -1,0 +1,33 @@
+name: Screenshots
+
+# Manual trigger only — screenshot runs are slow on shared runners.
+# iOS screenshots are fully demo-driven; macOS screenshots need a development
+# certificate (iCloud entitlements), so run those locally with
+# Scripts/screenshots-macos.sh.
+on:
+  workflow_dispatch:
+
+jobs:
+  ios-screenshots:
+    name: iOS App Store screenshots
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Capture screenshots
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -oE "iPhone [^(]+" | head -1 | xargs)
+          ./Scripts/screenshots-ios.sh "$DEVICE"
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-screenshots
+          path: Screenshots/ios/

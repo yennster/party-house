@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Unit tests + builds
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Swift package tests (color math, parsers, gradient engine, LIFX packets)
+        working-directory: Packages/PartyHouseKit
+        run: swift test
+
+      - name: Build iOS app (simulator)
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -oE "iPhone [^(]+" | head -1 | xargs)
+          echo "Using simulator: $DEVICE"
+          xcodebuild build \
+            -project PartyHouse.xcodeproj \
+            -scheme PartyHouse-iOS \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+
+      - name: Build macOS app
+        run: |
+          xcodebuild build \
+            -project PartyHouse.xcodeproj \
+            -scheme PartyHouse-macOS \
+            -destination "platform=macOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+
+  smoke:
+    name: iOS demo-mode smoke test
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run demo smoke UITest
+        run: |
+          DEVICE=$(xcrun simctl list devices available | grep -oE "iPhone [^(]+" | head -1 | xargs)
+          echo "Using simulator: $DEVICE"
+          xcodebuild test \
+            -project PartyHouse.xcodeproj \
+            -scheme PartyHouse-iOS \
+            -destination "platform=iOS Simulator,name=$DEVICE" \
+            -only-testing:PartyHouseUITests-iOS/DemoSmokeTests \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
