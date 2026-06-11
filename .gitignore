@@ -69,11 +69,5 @@ cache/
 !.env.example
 
 # Screenshot output (regenerable via Scripts/screenshots-*.sh)
-Screenshots/
 *.xcresult
 
-# Local-only App Store assets (also covered by /fastlane/)
-AppStore/
-
-# Marketing build output (regenerable)
-Marketing/framed/

@@ -1,0 +1,15 @@
+{
+  "device_frame_version": "latest",
+  "default": {
+    "background": "../../background.png",
+    "padding": 110,
+    "show_complete_frame": true,
+    "stack_title": false,
+    "title_below_image": false,
+    "title": {
+      "color": "#FFFFFF",
+      "font": "./fonts/Title.ttf"
+    }
+  },
+  "data": []
+}

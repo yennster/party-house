@@ -25,11 +25,9 @@ public struct ZoneDetailView: View {
 
                 paletteRow
 
-                GlassEffectContainer(spacing: 14) {
-                    LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(members) { light in
-                            LightTile(light: light)
-                        }
+                LazyVGrid(columns: columns, spacing: 12) {
+                    ForEach(members) { light in
+                        LightTile(light: light)
                     }
                 }
 
@@ -105,29 +103,27 @@ public struct ZoneDetailView: View {
                 .foregroundStyle(.secondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                GlassEffectContainer(spacing: 12) {
-                    HStack(spacing: 10) {
-                        ForEach(Palette.builtIns) { palette in
-                            Button {
-                                Task { await store.applyPalette(palette, to: zone) }
-                            } label: {
-                                VStack(spacing: 6) {
-                                    PaletteStrip(palette: palette, height: 18)
-                                        .frame(width: 92)
-                                    Text(palette.name)
-                                        .font(.caption2)
-                                        .lineLimit(1)
-                                }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 9)
+                HStack(spacing: 10) {
+                    ForEach(Palette.builtIns) { palette in
+                        Button {
+                            Task { await store.applyPalette(palette, to: zone) }
+                        } label: {
+                            VStack(spacing: 6) {
+                                PaletteStrip(palette: palette, height: 18)
+                                    .frame(width: 92)
+                                Text(palette.name)
+                                    .font(.caption2)
+                                    .lineLimit(1)
                             }
-                            .buttonStyle(.plain)
-                            .partyGlassPill()
-                            .accessibilityIdentifier("palette-\(palette.name)")
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 9)
                         }
+                        .buttonStyle(.plain)
+                        .partyGlassPill()
+                        .accessibilityIdentifier("palette-\(palette.name)")
                     }
-                    .padding(.vertical, 2)
                 }
+                .padding(.vertical, 2)
             }
         }
     }

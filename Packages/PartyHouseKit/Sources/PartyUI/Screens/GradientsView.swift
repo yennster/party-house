@@ -76,33 +76,31 @@ public struct GradientsView: View {
             Text(title)
                 .font(.headline)
 
-            GlassEffectContainer(spacing: 14) {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 156), spacing: 12)], spacing: 12) {
-                    ForEach(palettes) { palette in
-                        Button {
-                            apply(palette)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 10) {
-                                PaletteStrip(palette: palette, height: 44)
-                                Text(palette.name)
-                                    .font(.subheadline.weight(.medium))
-                                    .lineLimit(1)
-                            }
-                            .padding(14)
-                            .contentShape(Rectangle())
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 156), spacing: 12)], spacing: 12) {
+                ForEach(palettes) { palette in
+                    Button {
+                        apply(palette)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 10) {
+                            PaletteStrip(palette: palette, height: 44)
+                            Text(palette.name)
+                                .font(.subheadline.weight(.medium))
+                                .lineLimit(1)
                         }
-                        .buttonStyle(.plain)
-                        .partyGlassCard()
-                        .contextMenu {
-                            if deletable {
-                                Button("Delete", role: .destructive) {
-                                    customPalettes.removeAll { $0.id == palette.id }
-                                    persistCustomPalettes()
-                                }
-                            }
-                        }
-                        .accessibilityIdentifier("gradient-card-\(palette.name)")
+                        .padding(14)
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .partyGlassCard()
+                    .contextMenu {
+                        if deletable {
+                            Button("Delete", role: .destructive) {
+                                customPalettes.removeAll { $0.id == palette.id }
+                                persistCustomPalettes()
+                            }
+                        }
+                    }
+                    .accessibilityIdentifier("gradient-card-\(palette.name)")
                 }
             }
         }
@@ -113,9 +111,12 @@ public struct GradientsView: View {
             importing = true
         } label: {
             Label("Import CSS Gradient", systemImage: "curlybraces")
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 2)
         }
         .buttonStyle(.glass)
+        .controlSize(.regular)
+        .frame(maxWidth: .infinity, alignment: .center)
         .accessibilityIdentifier("import-gradient")
     }
 

@@ -45,25 +45,23 @@ public struct MenuBarContentView: View {
             .labelsHidden()
             .pickerStyle(.menu)
 
-            GlassEffectContainer(spacing: 10) {
-                HStack(spacing: 10) {
-                    Button {
-                        Task { await store.setPower(true, lightIDs: zone.lightIDs) }
-                    } label: {
-                        Label("On", systemImage: "lightbulb.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .tint(PartyTheme.accent)
-
-                    Button {
-                        Task { await store.setPower(false, lightIDs: zone.lightIDs) }
-                    } label: {
-                        Label("Off", systemImage: "power")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.glass)
+            HStack(spacing: 10) {
+                Button {
+                    Task { await store.setPower(true, lightIDs: zone.lightIDs) }
+                } label: {
+                    Label("On", systemImage: "lightbulb.fill")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.glassProminent)
+                .tint(PartyTheme.accent)
+
+                Button {
+                    Task { await store.setPower(false, lightIDs: zone.lightIDs) }
+                } label: {
+                    Label("Off", systemImage: "power")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.glass)
             }
 
             VStack(alignment: .leading, spacing: 4) {

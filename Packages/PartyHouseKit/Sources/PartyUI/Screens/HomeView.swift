@@ -13,30 +13,28 @@ public struct HomeView: View {
     public var body: some View {
         NavigationStack {
             ScrollView {
-                GlassEffectContainer(spacing: 18) {
-                    LazyVStack(spacing: 14) {
-                        ForEach(store.displayZones) { zone in
-                            NavigationLink(value: zone.id) {
-                                ZoneCard(zone: zone)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("zone-card-\(zone.name)")
-                            .contextMenu {
-                                if !zone.isAllLights {
-                                    Button("Edit Zone") { editingZone = zone }
-                                    Button("Delete Zone", role: .destructive) {
-                                        store.zoneStore.delete(zone.id)
-                                        store.reconcile()
-                                    }
+                LazyVStack(spacing: 14) {
+                    ForEach(store.displayZones) { zone in
+                        NavigationLink(value: zone.id) {
+                            ZoneCard(zone: zone)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("zone-card-\(zone.name)")
+                        .contextMenu {
+                            if !zone.isAllLights {
+                                Button("Edit Zone") { editingZone = zone }
+                                Button("Delete Zone", role: .destructive) {
+                                    store.zoneStore.delete(zone.id)
+                                    store.reconcile()
                                 }
                             }
                         }
-
-                        addZoneButton
                     }
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 12)
+
+                    addZoneButton
                 }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 12)
             }
             .background(PartyBackground())
             .navigationTitle("Party House")
