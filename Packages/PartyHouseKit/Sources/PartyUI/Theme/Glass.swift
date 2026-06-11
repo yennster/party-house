@@ -44,12 +44,20 @@ public extension View {
         )
     }
 
-    /// Interactive glass for tappable chips and pills.
+    /// Pill chrome for chips that live inside scrollable rows. Uses material rather
+    /// than glassEffect: glass shapes in a scrolling container get a shared backdrop
+    /// platter (a visible grey rectangle behind the row), materials don't.
     func partyGlassPill(tint: Color? = nil) -> some View {
-        glassEffect(
-            (tint.map { Glass.regular.tint($0.opacity(0.35)) } ?? .regular).interactive(),
-            in: .capsule
-        )
+        background {
+            ZStack {
+                Capsule().fill(.ultraThinMaterial)
+                if let tint {
+                    Capsule().fill(tint.opacity(0.22))
+                }
+            }
+        }
+        .overlay(Capsule().strokeBorder(.white.opacity(0.22), lineWidth: 0.5))
+        .clipShape(Capsule())
     }
 }
 

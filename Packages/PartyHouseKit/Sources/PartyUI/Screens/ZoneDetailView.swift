@@ -53,25 +53,24 @@ public struct ZoneDetailView: View {
     private var controlsHeader: some View {
         VStack(spacing: 14) {
             HStack(spacing: 12) {
-                Button {
-                    Task { await store.setPower(true, lightIDs: zone.lightIDs) }
-                } label: {
-                    Label("All On", systemImage: "lightbulb.fill")
-                        .frame(maxWidth: .infinity)
+                powerPill(
+                    title: "All On",
+                    icon: "lightbulb.fill",
+                    tint: PartyTheme.accent,
+                    identifier: "zone-all-on"
+                ) {
+                    await store.setPower(true, lightIDs: zone.lightIDs)
                 }
-                .buttonStyle(.glassProminent)
-                .tint(PartyTheme.accent)
-                .accessibilityIdentifier("zone-all-on")
-
-                Button {
-                    Task { await store.setPower(false, lightIDs: zone.lightIDs) }
-                } label: {
-                    Label("All Off", systemImage: "power")
-                        .frame(maxWidth: .infinity)
+                powerPill(
+                    title: "All Off",
+                    icon: "power",
+                    tint: nil,
+                    identifier: "zone-all-off"
+                ) {
+                    await store.setPower(false, lightIDs: zone.lightIDs)
                 }
-                .buttonStyle(.glass)
-                .accessibilityIdentifier("zone-all-off")
             }
+            .frame(maxWidth: .infinity)
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Zone brightness")
@@ -94,6 +93,33 @@ public struct ZoneDetailView: View {
                 groupBrightness = onLights.map(\.state.brightness).reduce(0, +) / Double(onLights.count)
             }
         }
+    }
+
+    /// Capsule glass button for zone power. Pink stays — as a tint *inside* the
+    /// glass — so it reads as Liquid Glass instead of a solid fill.
+    private func powerPill(
+        title: String,
+        icon: String,
+        tint: Color?,
+        identifier: String,
+        action: @escaping () async -> Void
+    ) -> some View {
+        Button {
+            Task { await action() }
+        } label: {
+            Label(title, systemImage: icon)
+                .font(.headline)
+                .foregroundStyle(tint == nil ? AnyShapeStyle(.primary) : AnyShapeStyle(.white))
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.plain)
+        .glassEffect(
+            (tint.map { Glass.regular.tint($0.opacity(0.55)) } ?? .regular).interactive(),
+            in: .capsule
+        )
+        .frame(maxWidth: 280)
+        .accessibilityIdentifier(identifier)
     }
 
     private var paletteRow: some View {
