@@ -110,13 +110,30 @@ public struct GradientsView: View {
         Button {
             importing = true
         } label: {
-            Label("Import CSS Gradient", systemImage: "curlybraces")
-                .padding(.horizontal, 10)
-                .padding(.vertical, 2)
+            HStack(spacing: 14) {
+                Image(systemName: "curlybraces")
+                    .font(.body.weight(.semibold))
+                    .frame(width: 38, height: 38)
+                    .glassEffect(.regular, in: .circle)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Import CSS Gradient")
+                        .font(.headline)
+                    Text("Paste any linear-gradient(…) or color list")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "plus.circle.fill")
+                    .foregroundStyle(.secondary)
+            }
+            .padding(16)
+            .contentShape(Rectangle())
         }
-        .buttonStyle(.glass)
-        .controlSize(.regular)
-        .frame(maxWidth: .infinity, alignment: .center)
+        .buttonStyle(.plain)
+        .partyGlassCard()
         .accessibilityIdentifier("import-gradient")
     }
 

@@ -6,6 +6,30 @@ import PartyHomeAssistant
 import PartyLIFX
 import PartyUI
 
+/// Volatile UserDefaults for demo mode — covers exactly the calls SyncEngine makes.
+final class EphemeralDefaults: UserDefaults, @unchecked Sendable {
+    private var storage: [String: Any] = [:]
+    private let lock = NSLock()
+
+    override func set(_ value: Any?, forKey defaultName: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        storage[defaultName] = value
+    }
+
+    override func data(forKey defaultName: String) -> Data? {
+        lock.lock()
+        defer { lock.unlock() }
+        return storage[defaultName] as? Data
+    }
+
+    override func removeObject(forKey defaultName: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        storage.removeValue(forKey: defaultName)
+    }
+}
+
 /// Composition root shared by the iOS and macOS apps: builds stores, constructs
 /// providers from synced configuration, and seeds the demo house when launched
 /// with `-Demo YES` (previews, UI tests, App Store screenshots).
@@ -32,10 +56,10 @@ final class AppEnvironment {
 
         let sync: SyncEngine
         if demo {
-            // Demo state lives in its own suite so it never pollutes real config.
-            let defaults = UserDefaults(suiteName: "io.github.yennster.partyhouse.demo")!
-            defaults.removePersistentDomain(forName: "io.github.yennster.partyhouse.demo")
-            sync = SyncEngine(defaults: defaults, cloudEnabled: false)
+            // Demo state is in-memory only: it never pollutes real config, and a
+            // sandboxed on-disk suite outside the app group would trip macOS 26's
+            // "access data from other apps" prompt.
+            sync = SyncEngine(defaults: EphemeralDefaults(), cloudEnabled: false)
         } else {
             sync = .shared
         }
