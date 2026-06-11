@@ -97,8 +97,9 @@ both apps. Authentication uses an App Store Connect API key — either a fastlan
 variables documented in [.env.example](.env.example).
 
 ```sh
-bundle exec fastlane ios release    # archive + upload iOS build
-bundle exec fastlane mac release    # archive + upload macOS build
+fastlane ios release    # archive + upload iOS build
+fastlane mac release    # archive + upload macOS build
+fastlane ios beta       # TestFlight
 ```
 
 ## Why no Govee/WiZ/Tuya/Nanoleaf integrations?
