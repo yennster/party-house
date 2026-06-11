@@ -108,14 +108,17 @@ public enum HueDiscovery {
     static func resolveHost(for endpoint: NWEndpoint, timeout: TimeInterval = 3) async -> String? {
         await withCheckedContinuation { continuation in
             let connection = NWConnection(to: endpoint, using: .tcp)
-            let lock = NSLock()
-            var resumed = false
+            final class Flag: @unchecked Sendable {
+                let lock = NSLock()
+                var resumed = false
+            }
+            let flag = Flag()
 
-            func finish(_ value: String?) {
-                lock.lock()
-                defer { lock.unlock() }
-                guard !resumed else { return }
-                resumed = true
+            @Sendable func finish(_ value: String?) {
+                flag.lock.lock()
+                defer { flag.lock.unlock() }
+                guard !flag.resumed else { return }
+                flag.resumed = true
                 connection.cancel()
                 continuation.resume(returning: value)
             }

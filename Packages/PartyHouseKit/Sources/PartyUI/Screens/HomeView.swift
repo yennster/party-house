@@ -20,6 +20,7 @@ public struct HomeView: View {
                                 ZoneCard(zone: zone)
                             }
                             .buttonStyle(.plain)
+                            .accessibilityIdentifier("zone-card-\(zone.name)")
                             .contextMenu {
                                 if !zone.isAllLights {
                                     Button("Edit Zone") { editingZone = zone }

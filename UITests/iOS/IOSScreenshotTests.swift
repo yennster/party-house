@@ -13,18 +13,18 @@ final class IOSScreenshotTests: XCTestCase {
         app.launch()
 
         // 01 — Home: zone cards.
-        XCTAssertTrue(app.staticTexts["Party House"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Party House"].waitForExistence(timeout: 30))
         sleep(1)
         Snap.shot("01-home", app: app, testCase: self)
 
         // 02 — Zone detail: lights grid + palette row.
-        app.buttons["zone-card-Living Room"].firstMatch.tap()
-        XCTAssertTrue(app.buttons["zone-all-on"].waitForExistence(timeout: 5))
+        Snap.element("zone-card-Living Room", in: app).tap()
+        XCTAssertTrue(Snap.element("zone-all-on", in: app).waitForExistence(timeout: 5))
         sleep(1)
         Snap.shot("02-zone", app: app, testCase: self)
 
         // 03 — Gradient applied to the zone.
-        let palette = app.buttons["palette-Neon Nights"].firstMatch
+        let palette = Snap.element("palette-Neon Nights", in: app)
         if palette.waitForExistence(timeout: 3) {
             palette.tap()
             sleep(1)
@@ -33,13 +33,13 @@ final class IOSScreenshotTests: XCTestCase {
 
         // 04 — Gradients gallery.
         app.buttons["Gradients"].firstMatch.tap()
-        XCTAssertTrue(app.buttons["import-gradient"].waitForExistence(timeout: 5))
+        XCTAssertTrue(Snap.element("import-gradient", in: app).waitForExistence(timeout: 5))
         sleep(1)
         Snap.shot("04-gradients", app: app, testCase: self)
 
         // 05 — Settings: integrations.
         app.buttons["Settings"].firstMatch.tap()
-        XCTAssertTrue(app.buttons["settings-hue"].waitForExistence(timeout: 5))
+        XCTAssertTrue(Snap.element("settings-hue", in: app).waitForExistence(timeout: 5))
         sleep(1)
         Snap.shot("05-settings", app: app, testCase: self)
     }

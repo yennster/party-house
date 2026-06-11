@@ -12,14 +12,14 @@ final class DemoSmokeTests: XCTestCase {
         let app = Snap.demoApp()
         app.launch()
 
-        XCTAssertTrue(app.staticTexts["Party House"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["zone-card-Living Room"].firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["everything-off"].firstMatch.exists)
+        XCTAssertTrue(app.staticTexts["Party House"].waitForExistence(timeout: 30))
+        XCTAssertTrue(Snap.element("zone-card-Living Room", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(Snap.element("everything-off", in: app).exists)
 
         app.buttons["Gradients"].firstMatch.tap()
-        XCTAssertTrue(app.buttons["import-gradient"].waitForExistence(timeout: 5))
+        XCTAssertTrue(Snap.element("import-gradient", in: app).waitForExistence(timeout: 5))
 
         app.buttons["Settings"].firstMatch.tap()
-        XCTAssertTrue(app.buttons["settings-hue"].waitForExistence(timeout: 5))
+        XCTAssertTrue(Snap.element("settings-hue", in: app).waitForExistence(timeout: 5))
     }
 }

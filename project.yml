@@ -122,6 +122,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.uitests
         TEST_TARGET_NAME: PartyHouse-iOS
+        GENERATE_INFOPLIST_FILE: YES
 
   PartyHouseUITests-macOS:
     type: bundle.ui-testing
@@ -135,6 +136,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.uitests
         TEST_TARGET_NAME: PartyHouse-macOS
+        GENERATE_INFOPLIST_FILE: YES
 
 schemes:
   PartyHouse-iOS:

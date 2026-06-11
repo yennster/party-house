@@ -24,6 +24,12 @@ enum Snap {
     }
     #endif
 
+    /// Identifier lookup that doesn't care how SwiftUI exposes the element
+    /// (Button vs otherElement varies by container and OS release).
+    static func element(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any)[identifier].firstMatch
+    }
+
     static func demoApp(scene: String = "home", extraArguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [

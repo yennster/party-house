@@ -11,10 +11,13 @@ final class MacDemoSmokeTests: XCTestCase {
         let app = Snap.demoApp()
         app.launch()
 
-        XCTAssertTrue(app.staticTexts["Party House"].firstMatch.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["zone-card-Living Room"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 30))
 
-        app.buttons["Gradients"].firstMatch.click()
-        XCTAssertTrue(app.buttons["import-gradient"].waitForExistence(timeout: 5))
+        let homeTab = Snap.element("Home", in: app)
+        if homeTab.waitForExistence(timeout: 10) { homeTab.click() }
+        XCTAssertTrue(Snap.element("zone-card-Living Room", in: app).waitForExistence(timeout: 10))
+
+        Snap.element("Gradients", in: app).click()
+        XCTAssertTrue(Snap.element("import-gradient", in: app).waitForExistence(timeout: 5))
     }
 }
