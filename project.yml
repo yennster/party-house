@@ -1,0 +1,164 @@
+name: PartyHouse
+options:
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "26.0"
+    macOS: "26.0"
+  groupSortPosition: top
+
+configFiles:
+  Debug: Config/Shared.xcconfig
+  Release: Config/Shared.xcconfig
+
+packages:
+  PartyHouseKit:
+    path: Packages/PartyHouseKit
+
+settings:
+  base:
+    GENERATE_INFOPLIST_FILE: NO
+    ALWAYS_SEARCH_USER_PATHS: NO
+
+targets:
+  PartyHouse-iOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Apps/iOS
+      - path: Apps/Shared
+    dependencies:
+      - package: PartyHouseKit
+        products:
+          - PartyCore
+          - PartyHue
+          - PartyHomeAssistant
+          - PartyLIFX
+          - PartyUI
+      - target: PartyWidgets-iOS
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse
+        PRODUCT_NAME: Party House
+        INFOPLIST_FILE: Apps/iOS/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/PartyHouse-iOS.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        ENABLE_PREVIEWS: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  PartyHouse-macOS:
+    type: application
+    platform: macOS
+    sources:
+      - path: Apps/macOS
+      - path: Apps/Shared
+    dependencies:
+      - package: PartyHouseKit
+        products:
+          - PartyCore
+          - PartyHue
+          - PartyHomeAssistant
+          - PartyLIFX
+          - PartyUI
+      - target: PartyWidgets-macOS
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse
+        PRODUCT_NAME: Party House
+        INFOPLIST_FILE: Apps/macOS/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/PartyHouse-macOS.entitlements
+        ENABLE_PREVIEWS: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  PartyWidgets-iOS:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Apps/Widgets
+      - path: Apps/Shared/Intents
+    dependencies:
+      - package: PartyHouseKit
+        products:
+          - PartyCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.widgets
+        PRODUCT_NAME: PartyWidgets
+        INFOPLIST_FILE: Apps/Widgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/Widgets-iOS.entitlements
+        SKIP_INSTALL: YES
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) WIDGET_EXTENSION"
+
+  PartyWidgets-macOS:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Apps/Widgets
+      - path: Apps/Shared/Intents
+    dependencies:
+      - package: PartyHouseKit
+        products:
+          - PartyCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.widgets
+        PRODUCT_NAME: PartyWidgets
+        INFOPLIST_FILE: Apps/Widgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Config/Widgets-macOS.entitlements
+        SKIP_INSTALL: YES
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) WIDGET_EXTENSION"
+
+  PartyHouseUITests-iOS:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests/iOS
+      - path: UITests/Shared
+    dependencies:
+      - target: PartyHouse-iOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.uitests
+        TEST_TARGET_NAME: PartyHouse-iOS
+
+  PartyHouseUITests-macOS:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: UITests/macOS
+      - path: UITests/Shared
+    dependencies:
+      - target: PartyHouse-macOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yennster.partyhouse.uitests
+        TEST_TARGET_NAME: PartyHouse-macOS
+
+schemes:
+  PartyHouse-iOS:
+    build:
+      targets:
+        PartyHouse-iOS: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - PartyHouseUITests-iOS
+    archive:
+      config: Release
+
+  PartyHouse-macOS:
+    build:
+      targets:
+        PartyHouse-macOS: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - PartyHouseUITests-macOS
+    archive:
+      config: Release

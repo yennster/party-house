@@ -1,0 +1,6 @@
+// Local code-signing config — your Apple Developer Team ID.
+// Kept out of git via: git update-index --skip-worktree Signing.xcconfig
+// This is the TEAM ID (cert OU / "Jennifer Speelman"), NOT the cert
+// common-name suffix C3M77U97WH — that value doesn't resolve to a team,
+// which made Xcode show "Unknown Name (C3M77U97WH)" and reset to None.
+DEVELOPMENT_TEAM = B8N96XGBV7

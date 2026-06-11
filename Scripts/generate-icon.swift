@@ -1,0 +1,160 @@
+#!/usr/bin/env swift
+// Generates the Party House app icon:
+//   - Apps/iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png (full bleed)
+//   - Apps/macOS/Assets.xcassets/AppIcon.appiconset/AppIcon-*.png (rounded, padded)
+// Pure CoreGraphics — run `swift Scripts/generate-icon.swift` from the repo root.
+
+import AppKit
+import CoreGraphics
+
+let size = 1024
+let scriptDirectory = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
+let repoRoot = scriptDirectory.deletingLastPathComponent()
+
+func makeContext() -> CGContext {
+    CGContext(
+        data: nil,
+        width: size,
+        height: size,
+        bitsPerComponent: 8,
+        bytesPerRow: 0,
+        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )!
+}
+
+func color(_ hex: UInt32, alpha: CGFloat = 1) -> CGColor {
+    CGColor(
+        srgbRed: CGFloat((hex >> 16) & 0xff) / 255,
+        green: CGFloat((hex >> 8) & 0xff) / 255,
+        blue: CGFloat(hex & 0xff) / 255,
+        alpha: alpha
+    )
+}
+
+func drawArtwork(in ctx: CGContext, rect: CGRect, cornerRadius: CGFloat) {
+    // Clip to (optionally rounded) bounds.
+    let path = CGPath(roundedRect: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)
+    ctx.addPath(path)
+    ctx.clip()
+
+    // Night-party gradient backdrop.
+    let gradient = CGGradient(
+        colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+        colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)] as CFArray,
+        locations: [0.0, 0.55, 1.0]
+    )!
+    ctx.drawLinearGradient(
+        gradient,
+        start: CGPoint(x: rect.minX, y: rect.maxY),
+        end: CGPoint(x: rect.maxX, y: rect.minY),
+        options: []
+    )
+
+    // Soft glow behind the house.
+    let glow = CGGradient(
+        colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+        colors: [color(0xffffff, alpha: 0.55), color(0xffffff, alpha: 0.0)] as CFArray,
+        locations: [0, 1]
+    )!
+    ctx.drawRadialGradient(
+        glow,
+        startCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
+        startRadius: 0,
+        endCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
+        endRadius: rect.width * 0.42,
+        options: []
+    )
+
+    // House silhouette.
+    let w = rect.width
+    let h = rect.height
+    let house = CGMutablePath()
+    let baseY = rect.minY + h * 0.26
+    let bodyW = w * 0.42
+    let bodyH = h * 0.26
+    let bodyX = rect.midX - bodyW / 2
+    let roofPeakY = baseY + bodyH + h * 0.16
+
+    house.move(to: CGPoint(x: bodyX, y: baseY))
+    house.addLine(to: CGPoint(x: bodyX + bodyW, y: baseY))
+    house.addLine(to: CGPoint(x: bodyX + bodyW, y: baseY + bodyH))
+    house.addLine(to: CGPoint(x: rect.midX + w * 0.27, y: baseY + bodyH))
+    house.addLine(to: CGPoint(x: rect.midX, y: roofPeakY))
+    house.addLine(to: CGPoint(x: rect.midX - w * 0.27, y: baseY + bodyH))
+    house.addLine(to: CGPoint(x: bodyX, y: baseY + bodyH))
+    house.closeSubpath()
+
+    ctx.setFillColor(color(0xffffff))
+    ctx.addPath(house)
+    ctx.fillPath()
+
+    // Door — gradient shows through.
+    let doorW = w * 0.10
+    let doorH = h * 0.13
+    let doorRect = CGRect(x: rect.midX - doorW / 2, y: baseY, width: doorW, height: doorH)
+    ctx.setBlendMode(.clear)
+    ctx.addPath(CGPath(roundedRect: doorRect, cornerWidth: doorW * 0.45, cornerHeight: doorW * 0.45, transform: nil))
+    ctx.fillPath()
+    ctx.setBlendMode(.normal)
+
+    // Disco sparkles.
+    ctx.setFillColor(color(0xffffff, alpha: 0.95))
+    let sparkles: [(CGFloat, CGFloat, CGFloat)] = [
+        (0.23, 0.78, 0.020), (0.79, 0.82, 0.026), (0.69, 0.66, 0.014),
+        (0.30, 0.62, 0.012), (0.17, 0.40, 0.016), (0.84, 0.42, 0.018),
+    ]
+    for (fx, fy, fr) in sparkles {
+        let r = w * fr
+        ctx.fillEllipse(in: CGRect(
+            x: rect.minX + w * fx - r,
+            y: rect.minY + h * fy - r,
+            width: r * 2,
+            height: r * 2
+        ))
+    }
+}
+
+func writePNG(_ image: CGImage, to url: URL) {
+    let rep = NSBitmapImageRep(cgImage: image)
+    rep.size = NSSize(width: image.width, height: image.height)
+    guard let data = rep.representation(using: .png, properties: [:]) else {
+        fatalError("PNG encode failed for \(url.path)")
+    }
+    try! FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+    try! data.write(to: url)
+    print("wrote \(url.path)")
+}
+
+func resized(_ image: CGImage, to pixel: Int) -> CGImage {
+    let ctx = CGContext(
+        data: nil, width: pixel, height: pixel,
+        bitsPerComponent: 8, bytesPerRow: 0,
+        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )!
+    ctx.interpolationQuality = .high
+    ctx.draw(image, in: CGRect(x: 0, y: 0, width: pixel, height: pixel))
+    return ctx.makeImage()!
+}
+
+// iOS: full-bleed square (the system rounds the corners).
+let iosCtx = makeContext()
+drawArtwork(in: iosCtx, rect: CGRect(x: 0, y: 0, width: size, height: size), cornerRadius: 0)
+let iosIcon = iosCtx.makeImage()!
+writePNG(iosIcon, to: repoRoot.appendingPathComponent("Apps/iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"))
+
+// macOS: padded + pre-rounded artwork on transparency, per HIG.
+let macCtx = makeContext()
+let inset = CGFloat(size) * 0.09
+let macRect = CGRect(x: inset, y: inset, width: CGFloat(size) - inset * 2, height: CGFloat(size) - inset * 2)
+drawArtwork(in: macCtx, rect: macRect, cornerRadius: macRect.width * 0.225)
+let macMaster = macCtx.makeImage()!
+
+let macSet = repoRoot.appendingPathComponent("Apps/macOS/Assets.xcassets/AppIcon.appiconset")
+for (points, scale) in [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), (256, 1), (256, 2), (512, 1), (512, 2)] {
+    let pixels = points * scale
+    writePNG(resized(macMaster, to: pixels), to: macSet.appendingPathComponent("AppIcon-\(points)@\(scale)x.png"))
+}
+
+print("done")

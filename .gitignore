@@ -1,0 +1,31 @@
+# Secrets / local-only release tooling
+.env
+.env.*
+!.env.example
+fastlane/
+*.p8
+*.p12
+*.mobileprovision
+*.certSigningRequest
+
+# Generated Xcode project (regenerate with Scripts/bootstrap.sh)
+*.xcodeproj
+*.xcworkspace
+
+# Build artifacts
+.build/
+build/
+DerivedData/
+Screenshots/
+*.xcresult
+
+# Xcode user state
+xcuserdata/
+*.xcuserstate
+
+# SwiftPM
+Packages/PartyHouseKit/.build/
+Packages/PartyHouseKit/.swiftpm/
+
+# macOS noise
+.DS_Store
