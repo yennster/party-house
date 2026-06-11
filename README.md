@@ -92,9 +92,10 @@ development certificate, so it's local-only.
 
 Release tooling is intentionally **not** in the repo: the `fastlane/` directory and
 `.env` are gitignored. Locally, `fastlane/` contains lanes for building and uploading
-both apps. Authentication uses an App Store Connect API key — either a fastlane-format
-`api_key.json` in the repo root (gitignored) or the `APP_STORE_CONNECT_API_KEY_*`
-variables documented in [.env.example](.env.example).
+both apps. App Store metadata (description, keywords, release notes, review notes) lives in
+the local `fastlane/metadata` directory. Authentication uses an App Store Connect
+API key — either a fastlane-format `api_key.json` in the repo root (gitignored) or
+the `APP_STORE_CONNECT_API_KEY_*` variables documented in [.env.example](.env.example).
 
 ```sh
 fastlane ios release    # archive + upload iOS build

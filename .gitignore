@@ -70,5 +70,7 @@ cache/
 
 # Screenshot output (regenerable via Scripts/screenshots-*.sh)
 Screenshots/
-AppStore/screenshots/
 *.xcresult
+
+# Local-only App Store assets (also covered by /fastlane/)
+AppStore/
