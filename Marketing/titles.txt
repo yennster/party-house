@@ -1,0 +1,8 @@
+"01-home" = "Every light in your house. One glass dashboard.";
+"02-zone" = "Zones that mix Hue, Home Assistant & LIFX";
+"02-zone-gradient" = "Sweep a gradient across the whole room";
+"03-zone-gradient" = "Sweep a gradient across the whole room";
+"03-gradients" = "Party palettes — or paste any CSS gradient";
+"04-gradients" = "Party palettes — or paste any CSS gradient";
+"04-settings" = "Connects to the systems you already own";
+"05-settings" = "Connects to the systems you already own";

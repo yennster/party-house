@@ -74,3 +74,6 @@ Screenshots/
 
 # Local-only App Store assets (also covered by /fastlane/)
 AppStore/
+
+# Marketing build output (regenerable)
+Marketing/framed/
