@@ -144,11 +144,10 @@ drawArtwork(in: iosCtx, rect: CGRect(x: 0, y: 0, width: size, height: size), cor
 let iosIcon = iosCtx.makeImage()!
 writePNG(iosIcon, to: repoRoot.appendingPathComponent("Apps/iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"))
 
-// macOS: padded + pre-rounded artwork on transparency, per HIG.
+// macOS 26 (Tahoe) masks app icons into its squircle automatically, so ship the
+// same full-bleed artwork as iOS — padded legacy icons end up looking tiny.
 let macCtx = makeContext()
-let inset = CGFloat(size) * 0.09
-let macRect = CGRect(x: inset, y: inset, width: CGFloat(size) - inset * 2, height: CGFloat(size) - inset * 2)
-drawArtwork(in: macCtx, rect: macRect, cornerRadius: macRect.width * 0.225)
+drawArtwork(in: macCtx, rect: CGRect(x: 0, y: 0, width: size, height: size), cornerRadius: 0)
 let macMaster = macCtx.makeImage()!
 
 let macSet = repoRoot.appendingPathComponent("Apps/macOS/Assets.xcassets/AppIcon.appiconset")

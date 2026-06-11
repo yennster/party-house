@@ -23,8 +23,10 @@ final class MacScreenshotTests: XCTestCase {
         sleep(1)
         Snap.windowShot("01-home", app: app, testCase: self)
 
-        // 02 — Zone detail with gradient applied.
-        Snap.element("zone-card-Living Room", in: app).click()
+        // 02 — Zone detail with gradient applied. Click the left side of the card so
+        // the click can't land on the power toggle.
+        let livingRoomCard = Snap.element("zone-card-Living Room", in: app)
+        livingRoomCard.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).click()
         if Snap.element("zone-all-on", in: app).waitForExistence(timeout: 5) {
             let palette = Snap.element("palette-Neon Nights", in: app)
             if palette.exists { palette.click() }
