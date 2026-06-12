@@ -56,7 +56,7 @@ public struct ZoneDetailView: View {
                     Button {
                         editingZone = true
                     } label: {
-                        Label("Edit Zone", systemImage: "slider.horizontal.2.square.on.square")
+                        Label("Edit Zone", systemImage: "pencil")
                     }
                     .accessibilityIdentifier("zone-edit")
                 }
