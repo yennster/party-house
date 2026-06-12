@@ -249,6 +249,11 @@ struct RemoteAccessView: View {
                     .font(.callout)
             }
 
+            Section("Your own domain / reverse proxy") {
+                Text("Already serving Home Assistant at your own address (e.g. https://ha.example.com via Nginx Proxy Manager, Caddy, or a router port-forward)? Just enter that address as the External URL — if you can log into the HA dashboard there, Party House can use it. Make sure the domain is listed under http: → trusted_proxies / use_x_forwarded_for per your proxy's HA setup guide.")
+                    .font(.callout)
+            }
+
             Section("Private: Tailscale") {
                 Text("Install the Tailscale add-on on the Green and the Tailscale app on this device. Use the Green's Tailscale address (e.g. http://homeassistant.tail1234.ts.net:8123) as the External URL — it works anywhere the VPN is on.")
                     .font(.callout)

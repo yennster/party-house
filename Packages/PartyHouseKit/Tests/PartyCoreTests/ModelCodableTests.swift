@@ -63,3 +63,20 @@ final class ModelCodableTests: XCTestCase {
         XCTAssertTrue(a.isAllLights)
     }
 }
+
+extension ModelCodableTests {
+    func testHAURLNormalization() {
+        // Bare public hostname gets https.
+        XCTAssertEqual(HomeAssistantConfig.normalized("ha.speelman.casa"), "https://ha.speelman.casa")
+        // Bare .local / IP / localhost get http (no certs on LAN).
+        XCTAssertEqual(HomeAssistantConfig.normalized("homeassistant.local:8123"), "http://homeassistant.local:8123")
+        XCTAssertEqual(HomeAssistantConfig.normalized("192.168.1.5:8123"), "http://192.168.1.5:8123")
+        XCTAssertEqual(HomeAssistantConfig.normalized("localhost:8123"), "http://localhost:8123")
+        // Explicit schemes are preserved.
+        XCTAssertEqual(HomeAssistantConfig.normalized("http://ha.example.com"), "http://ha.example.com")
+        XCTAssertEqual(HomeAssistantConfig.normalized("https://x.ui.nabu.casa/"), "https://x.ui.nabu.casa")
+        // Whitespace and trailing slashes are stripped.
+        XCTAssertEqual(HomeAssistantConfig.normalized("  https://ha.example.com//  "), "https://ha.example.com")
+        XCTAssertEqual(HomeAssistantConfig.normalized("   "), "")
+    }
+}

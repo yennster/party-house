@@ -41,7 +41,29 @@ No open ports; traffic rides Cloudflare's network to your Green.
 4. Add `ha.yourdomain.com` to `http: trusted_proxies` per the add-on instructions.
 5. In Party House, set **External URL** to `https://ha.yourdomain.com`.
 
-## Option 3 — Tailscale (free, most private)
+## Option 3 — Your own domain / reverse proxy
+
+If Home Assistant is already reachable at your own address (say
+`https://ha.example.com`, via Cloudflared, Nginx Proxy Manager, Caddy, or a plain
+router port-forward + certificate), you're done: **enter that address as the
+External URL in Party House**. The rule of thumb — if the HA dashboard loads and
+you can log in at that URL from cellular, Party House can use it, WebSocket, widgets
+and all. The scheme is optional in the field (`ha.example.com` becomes `https://…`).
+
+Two HA-side notes for proxied setups:
+
+1. Your proxy must forward WebSocket upgrades (`/api/websocket`) — most HA proxy
+   guides configure this by default.
+2. `configuration.yaml` should trust the proxy:
+
+   ```yaml
+   http:
+     use_x_forwarded_for: true
+     trusted_proxies:
+       - <your proxy's IP or range>
+   ```
+
+## Option 4 — Tailscale (free, most private)
 
 Your Green and your devices join a private WireGuard mesh; nothing is exposed
 publicly at all.

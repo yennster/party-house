@@ -31,6 +31,28 @@ public struct HomeAssistantConfig: Codable, Hashable, Sendable {
             .filter { !$0.isEmpty }
             .compactMap(URL.init(string:))
     }
+
+    /// Cleans up a user-typed address: trims whitespace, adds a scheme when
+    /// missing (https for public hostnames, http for .local/IP addresses, which
+    /// rarely have certificates), and drops trailing slashes.
+    public static func normalized(_ raw: String) -> String {
+        var text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return "" }
+
+        if !text.contains("://") {
+            let host = text.split(separator: "/").first.map(String.init) ?? text
+            let bareHost = host.split(separator: ":").first.map(String.init) ?? host
+            let isLocalish = bareHost.hasSuffix(".local")
+                || bareHost == "localhost"
+                || bareHost.allSatisfy { $0.isNumber || $0 == "." }
+            text = (isLocalish ? "http://" : "https://") + text
+        }
+
+        while text.hasSuffix("/") {
+            text.removeLast()
+        }
+        return text
+    }
 }
 
 public struct LIFXConfig: Codable, Hashable, Sendable {

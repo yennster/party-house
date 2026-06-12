@@ -41,13 +41,13 @@ public struct HASetupView: View {
                 }
 
                 Section {
-                    TextField("https://yourhome.ui.nabu.casa", text: $externalURL)
+                    TextField("ha.example.com or yourhome.ui.nabu.casa", text: $externalURL)
                         .autocorrectionDisabled()
                         .accessibilityIdentifier("ha-external-url")
                 } header: {
                     Text("External URL (everywhere else) — optional")
                 } footer: {
-                    Text("Lets Party House control your lights from anywhere. See “Control from anywhere” in Settings for Nabu Casa, Cloudflare Tunnel, and Tailscale walkthroughs.")
+                    Text("Lets Party House control your lights from anywhere — your own domain behind a reverse proxy, Nabu Casa, Cloudflare Tunnel, or Tailscale all work. https:// is assumed if you leave the scheme off. See “Control from anywhere” in Settings for walkthroughs.")
                 }
 
                 Section {
@@ -107,6 +107,7 @@ public struct HASetupView: View {
         defer { testing = false }
 
         let candidates = [internalURL, externalURL]
+            .map(HomeAssistantConfig.normalized)
             .filter { !$0.isEmpty }
             .compactMap(URL.init(string:))
 
@@ -130,10 +131,11 @@ public struct HASetupView: View {
 
     private func save() {
         KeychainStore.save(token, for: .homeAssistantToken)
+        let external = HomeAssistantConfig.normalized(externalURL)
         var updated = configs
         updated.homeAssistant = HomeAssistantConfig(
-            internalURL: internalURL.trimmingCharacters(in: .whitespaces),
-            externalURL: externalURL.isEmpty ? nil : externalURL.trimmingCharacters(in: .whitespaces)
+            internalURL: HomeAssistantConfig.normalized(internalURL),
+            externalURL: external.isEmpty ? nil : external
         )
         configs = updated
         dismiss()
