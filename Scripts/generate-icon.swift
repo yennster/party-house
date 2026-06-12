@@ -195,7 +195,7 @@ let squircle = CGPath(
 macCtx.addPath(squircle)
 macCtx.clip()
 drawBackground(in: macCtx, rect: fullRect, colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)])
-drawForeground(in: macCtx, rect: fullRect)
+drawForeground(in: macCtx, rect: fullRect, punchDoor: false)
 let macIcon = macCtx.makeImage()!
 
 let macSet = repoRoot.appendingPathComponent("Apps/macOS/Assets.xcassets/AppIcon.appiconset")
