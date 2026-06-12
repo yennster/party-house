@@ -7,6 +7,7 @@ public struct ZoneDetailView: View {
 
     let zoneID: UUID
     @State private var groupBrightness: Double = 0.8
+    @State private var editingZone = false
 
     public init(zoneID: UUID) {
         self.zoneID = zoneID
@@ -48,6 +49,22 @@ public struct ZoneDetailView: View {
         #if os(iOS)
         .navigationBarTitleDisplayMode(.large)
         #endif
+        .toolbar {
+            // The implicit All Lights zone has no editable membership.
+            if !zone.isAllLights {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        editingZone = true
+                    } label: {
+                        Label("Edit Zone", systemImage: "slider.horizontal.2.square.on.square")
+                    }
+                    .accessibilityIdentifier("zone-edit")
+                }
+            }
+        }
+        .sheet(isPresented: $editingZone) {
+            ZoneEditorView(existing: zone)
+        }
     }
 
     private var controlsHeader: some View {
