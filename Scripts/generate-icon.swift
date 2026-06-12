@@ -79,14 +79,31 @@ func drawForeground(in ctx: CGContext, rect: CGRect, withGlow: Bool = true, punc
     let doorW = w * 0.10
     let doorH = h * 0.13
     let doorRect = CGRect(x: rect.midX - doorW / 2, y: baseY, width: doorW, height: doorH)
+    let doorPath = CGPath(roundedRect: doorRect, cornerWidth: doorW * 0.45, cornerHeight: doorW * 0.45, transform: nil)
     if punchDoor {
         ctx.setBlendMode(.clear)
+        ctx.addPath(doorPath)
+        ctx.fillPath()
+        ctx.setBlendMode(.normal)
     } else {
-        ctx.setFillColor(color(0x2b1a52))
+        // Opaque icons can't punch through — paint the doorway as warm light
+        // spilling out instead (party's inside).
+        ctx.saveGState()
+        ctx.addPath(doorPath)
+        ctx.clip()
+        let doorGlow = CGGradient(
+            colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+            colors: [color(0xffd166), color(0xff6b35), color(0xff2e93)] as CFArray,
+            locations: [0.0, 0.5, 1.0]
+        )!
+        ctx.drawLinearGradient(
+            doorGlow,
+            start: CGPoint(x: doorRect.midX, y: doorRect.minY),
+            end: CGPoint(x: doorRect.midX, y: doorRect.maxY),
+            options: []
+        )
+        ctx.restoreGState()
     }
-    ctx.addPath(CGPath(roundedRect: doorRect, cornerWidth: doorW * 0.45, cornerHeight: doorW * 0.45, transform: nil))
-    ctx.fillPath()
-    ctx.setBlendMode(.normal)
     ctx.setFillColor(color(0xffffff))
 
     // Disco sparkles.
