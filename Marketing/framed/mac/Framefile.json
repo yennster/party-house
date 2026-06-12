@@ -7,7 +7,7 @@
     "stack_title": false,
     "title_below_image": false,
     "title": {
-      "color": "#FFFFFF",
+      "color": "#FFFFFF00",
       "font": "./fonts/Title.ttf"
     }
   },

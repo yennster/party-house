@@ -29,9 +29,9 @@ public struct ZoneCard: View {
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(zone.name)
-                    .font(.headline)
+                    .font(PartyFont.cardTitle)
                 Text(statusText)
-                    .font(.subheadline)
+                    .font(PartyFont.detail)
                     .foregroundStyle(.secondary)
             }
 

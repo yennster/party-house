@@ -45,12 +45,12 @@ public struct LightTile: View {
                 Spacer(minLength: 0)
 
                 Text(light.name)
-                    .font(.subheadline.weight(.medium))
+                    .font(PartyFont.label)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
 
                 Text(detailText)
-                    .font(.caption)
+                    .font(PartyFont.detail)
                     .foregroundStyle(.secondary)
             }
             .padding(14)
@@ -102,12 +102,12 @@ public struct LightDetailSheet: View {
                 .padding(.top, 10)
 
             Text(light.name)
-                .font(.title3.weight(.semibold))
+                .font(PartyFont.sectionTitle)
 
             if light.capabilities.contains(.dimming) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Brightness — \(Int((brightness * 100).rounded()))%")
-                        .font(.subheadline)
+                        .font(PartyFont.sectionCaption)
                         .foregroundStyle(.secondary)
                     Slider(value: $brightness, in: 0.01...1) { editing in
                         if !editing {
@@ -123,7 +123,7 @@ public struct LightDetailSheet: View {
             if light.capabilities.contains(.color) {
                 HStack {
                     Text("Color")
-                        .font(.subheadline)
+                        .font(PartyFont.sectionCaption)
                         .foregroundStyle(.secondary)
                     Spacer()
                     ColorPicker("Light color", selection: $pickedColor, supportsOpacity: false)

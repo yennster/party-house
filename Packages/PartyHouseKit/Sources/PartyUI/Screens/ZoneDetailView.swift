@@ -74,7 +74,7 @@ public struct ZoneDetailView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Zone brightness")
-                    .font(.caption)
+                    .font(PartyFont.sectionCaption)
                     .foregroundStyle(.secondary)
                 Slider(value: $groupBrightness, in: 0.01...1) { editing in
                     if !editing {
@@ -108,7 +108,7 @@ public struct ZoneDetailView: View {
             Task { await action() }
         } label: {
             Label(title, systemImage: icon)
-                .font(.headline)
+                .font(PartyFont.cardTitle)
                 .foregroundStyle(tint == nil ? AnyShapeStyle(.primary) : AnyShapeStyle(.white))
                 .padding(.vertical, 12)
                 .frame(maxWidth: .infinity)
@@ -125,7 +125,7 @@ public struct ZoneDetailView: View {
     private var paletteRow: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Sweep a gradient across the zone")
-                .font(.caption)
+                .font(PartyFont.sectionCaption)
                 .foregroundStyle(.secondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -138,7 +138,7 @@ public struct ZoneDetailView: View {
                                 PaletteStrip(palette: palette, height: 18)
                                     .frame(width: 92)
                                 Text(palette.name)
-                                    .font(.caption2)
+                                    .font(PartyFont.detail)
                                     .lineLimit(1)
                             }
                             .padding(.horizontal, 12)

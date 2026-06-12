@@ -1,7 +1,7 @@
 #!/usr/bin/env swift
-// Generates the Party House app icon:
-//   - Apps/iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png (full bleed)
-//   - Apps/macOS/Assets.xcassets/AppIcon.appiconset/AppIcon-*.png (rounded, padded)
+// Generates the Party House app icon in all appearances:
+//   iOS:   AppIcon-1024.png (light), AppIcon-1024-dark.png, AppIcon-1024-tinted.png
+//   macOS: AppIcon-*.png size set (full bleed; Tahoe applies its own glass mask)
 // Pure CoreGraphics — run `swift Scripts/generate-icon.swift` from the repo root.
 
 import AppKit
@@ -32,41 +32,25 @@ func color(_ hex: UInt32, alpha: CGFloat = 1) -> CGColor {
     )
 }
 
-func drawArtwork(in ctx: CGContext, rect: CGRect, cornerRadius: CGFloat) {
-    // Clip to (optionally rounded) bounds.
-    let path = CGPath(roundedRect: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)
-    ctx.addPath(path)
-    ctx.clip()
+/// The white glyph layer: glow, house silhouette (door punched to transparency),
+/// and disco sparkles. Drawn over any background — or none, for the tinted icon.
+func drawForeground(in ctx: CGContext, rect: CGRect, withGlow: Bool = true) {
+    if withGlow {
+        let glow = CGGradient(
+            colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+            colors: [color(0xffffff, alpha: 0.55), color(0xffffff, alpha: 0.0)] as CFArray,
+            locations: [0, 1]
+        )!
+        ctx.drawRadialGradient(
+            glow,
+            startCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
+            startRadius: 0,
+            endCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
+            endRadius: rect.width * 0.42,
+            options: []
+        )
+    }
 
-    // Night-party gradient backdrop.
-    let gradient = CGGradient(
-        colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
-        colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)] as CFArray,
-        locations: [0.0, 0.55, 1.0]
-    )!
-    ctx.drawLinearGradient(
-        gradient,
-        start: CGPoint(x: rect.minX, y: rect.maxY),
-        end: CGPoint(x: rect.maxX, y: rect.minY),
-        options: []
-    )
-
-    // Soft glow behind the house.
-    let glow = CGGradient(
-        colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
-        colors: [color(0xffffff, alpha: 0.55), color(0xffffff, alpha: 0.0)] as CFArray,
-        locations: [0, 1]
-    )!
-    ctx.drawRadialGradient(
-        glow,
-        startCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
-        startRadius: 0,
-        endCenter: CGPoint(x: rect.midX, y: rect.midY - rect.height * 0.04),
-        endRadius: rect.width * 0.42,
-        options: []
-    )
-
-    // House silhouette.
     let w = rect.width
     let h = rect.height
     let house = CGMutablePath()
@@ -89,7 +73,7 @@ func drawArtwork(in ctx: CGContext, rect: CGRect, cornerRadius: CGFloat) {
     ctx.addPath(house)
     ctx.fillPath()
 
-    // Door — gradient shows through.
+    // Door — punched out so the backdrop shows through.
     let doorW = w * 0.10
     let doorH = h * 0.13
     let doorRect = CGRect(x: rect.midX - doorW / 2, y: baseY, width: doorW, height: doorH)
@@ -115,6 +99,20 @@ func drawArtwork(in ctx: CGContext, rect: CGRect, cornerRadius: CGFloat) {
     }
 }
 
+func drawBackground(in ctx: CGContext, rect: CGRect, colors: [CGColor]) {
+    let gradient = CGGradient(
+        colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+        colors: colors as CFArray,
+        locations: [0.0, 0.55, 1.0]
+    )!
+    ctx.drawLinearGradient(
+        gradient,
+        start: CGPoint(x: rect.minX, y: rect.maxY),
+        end: CGPoint(x: rect.maxX, y: rect.minY),
+        options: []
+    )
+}
+
 func writePNG(_ image: CGImage, to url: URL) {
     let rep = NSBitmapImageRep(cgImage: image)
     rep.size = NSSize(width: image.width, height: image.height)
@@ -138,22 +136,33 @@ func resized(_ image: CGImage, to pixel: Int) -> CGImage {
     return ctx.makeImage()!
 }
 
-// iOS: full-bleed square (the system rounds the corners).
-let iosCtx = makeContext()
-drawArtwork(in: iosCtx, rect: CGRect(x: 0, y: 0, width: size, height: size), cornerRadius: 0)
-let iosIcon = iosCtx.makeImage()!
-writePNG(iosIcon, to: repoRoot.appendingPathComponent("Apps/iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"))
+let fullRect = CGRect(x: 0, y: 0, width: size, height: size)
+let iosSet = repoRoot.appendingPathComponent("Apps/iOS/Assets.xcassets/AppIcon.appiconset")
 
-// macOS 26 (Tahoe) masks app icons into its squircle automatically, so ship the
-// same full-bleed artwork as iOS — padded legacy icons end up looking tiny.
-let macCtx = makeContext()
-drawArtwork(in: macCtx, rect: CGRect(x: 0, y: 0, width: size, height: size), cornerRadius: 0)
-let macMaster = macCtx.makeImage()!
+// Light (default): the party gradient.
+let lightCtx = makeContext()
+drawBackground(in: lightCtx, rect: fullRect, colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)])
+drawForeground(in: lightCtx, rect: fullRect)
+let lightIcon = lightCtx.makeImage()!
+writePNG(lightIcon, to: iosSet.appendingPathComponent("AppIcon-1024.png"))
 
+// Dark appearance: same glyph over a deep night gradient.
+let darkCtx = makeContext()
+drawBackground(in: darkCtx, rect: fullRect, colors: [color(0x48103f), color(0x271055), color(0x100b26)])
+drawForeground(in: darkCtx, rect: fullRect)
+writePNG(darkCtx.makeImage()!, to: iosSet.appendingPathComponent("AppIcon-1024-dark.png"))
+
+// Tinted/clear appearance: grayscale glyph on transparency — the system supplies
+// the glass backdrop and the user's tint.
+let tintedCtx = makeContext()
+drawForeground(in: tintedCtx, rect: fullRect, withGlow: false)
+writePNG(tintedCtx.makeImage()!, to: iosSet.appendingPathComponent("AppIcon-1024-tinted.png"))
+
+// macOS: full-bleed light artwork; Tahoe masks and glassifies legacy icons itself.
 let macSet = repoRoot.appendingPathComponent("Apps/macOS/Assets.xcassets/AppIcon.appiconset")
 for (points, scale) in [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), (256, 1), (256, 2), (512, 1), (512, 2)] {
     let pixels = points * scale
-    writePNG(resized(macMaster, to: pixels), to: macSet.appendingPathComponent("AppIcon-\(points)@\(scale)x.png"))
+    writePNG(resized(lightIcon, to: pixels), to: macSet.appendingPathComponent("AppIcon-\(points)@\(scale)x.png"))
 }
 
 print("done")

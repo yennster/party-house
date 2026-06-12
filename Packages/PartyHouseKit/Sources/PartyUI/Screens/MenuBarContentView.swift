@@ -30,10 +30,10 @@ public struct MenuBarContentView: View {
                 Image(systemName: "party.popper.fill")
                     .foregroundStyle(PartyTheme.accent)
                 Text("Party House")
-                    .font(.headline)
+                    .font(PartyFont.cardTitle)
                 Spacer()
                 Text(onCount > 0 ? "\(onCount) on" : "All off")
-                    .font(.caption)
+                    .font(PartyFont.detail)
                     .foregroundStyle(.secondary)
             }
 
@@ -66,7 +66,7 @@ public struct MenuBarContentView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Brightness")
-                    .font(.caption)
+                    .font(PartyFont.sectionCaption)
                     .foregroundStyle(.secondary)
                 Slider(value: $brightness, in: 0.01...1) { editing in
                     if !editing {
@@ -78,7 +78,7 @@ public struct MenuBarContentView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Gradients")
-                    .font(.caption)
+                    .font(PartyFont.sectionCaption)
                     .foregroundStyle(.secondary)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -99,7 +99,7 @@ public struct MenuBarContentView: View {
             Divider()
 
             Toggle("Hide Dock icon", isOn: hideDockIconBinding)
-                .font(.callout)
+                .font(PartyFont.label)
                 .toggleStyle(.checkbox)
 
             HStack {
@@ -108,7 +108,7 @@ public struct MenuBarContentView: View {
                     NSApp.activate(ignoringOtherApps: true)
                 }
                 .buttonStyle(.plain)
-                .font(.callout)
+                .font(PartyFont.label)
 
                 Spacer()
 
@@ -116,7 +116,7 @@ public struct MenuBarContentView: View {
                     NSApp.terminate(nil)
                 }
                 .buttonStyle(.plain)
-                .font(.callout)
+                .font(PartyFont.label)
                 .foregroundStyle(.secondary)
             }
         }

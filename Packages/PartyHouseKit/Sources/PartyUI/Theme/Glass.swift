@@ -15,6 +15,23 @@ public extension PHColor {
 
 // MARK: - Theme
 
+/// The app-wide type scale. Every custom surface (cards, tiles, chips, menubar)
+/// draws from these five roles so sizes and weights stay consistent across
+/// iPhone, iPad, and Mac. System containers (Forms, navigation titles) keep
+/// their platform defaults.
+public enum PartyFont {
+    /// Section headers ("Party Palettes") and sheet titles.
+    public static let sectionTitle = Font.system(.title3, design: .rounded, weight: .semibold)
+    /// Card titles, zone names, and primary buttons.
+    public static let cardTitle = Font.system(.headline, design: .rounded)
+    /// Primary text inside tiles and compact rows.
+    public static let label = Font.system(.subheadline, design: .rounded, weight: .medium)
+    /// Captions that introduce a control ("Zone brightness").
+    public static let sectionCaption = Font.system(.footnote, design: .rounded, weight: .medium)
+    /// Secondary details: on-counts, percentages, chip labels.
+    public static let detail = Font.system(.caption, design: .rounded)
+}
+
 public enum PartyTheme {
     public static let accent = Color(PHColor(hex: "#ff2e93")!)
     public static let accentSecondary = Color(PHColor(hex: "#7b2cbf")!)
@@ -44,20 +61,41 @@ public extension View {
         )
     }
 
-    /// Pill chrome for chips that live inside scrollable rows. Uses material rather
-    /// than glassEffect: glass shapes in a scrolling container get a shared backdrop
-    /// platter (a visible grey rectangle behind the row), materials don't.
+    /// Pill chrome for chips that live inside scrollable rows. Avoids glassEffect
+    /// (glass shapes in a scrolling container get a shared grey backdrop platter)
+    /// and avoids plain materials (they read flat grey). Instead: an adaptive
+    /// translucent white that matches the brightness of the glass cards.
     func partyGlassPill(tint: Color? = nil) -> some View {
-        background {
-            ZStack {
-                Capsule().fill(.ultraThinMaterial)
-                if let tint {
-                    Capsule().fill(tint.opacity(0.22))
+        modifier(PartyPillModifier(tint: tint))
+    }
+}
+
+struct PartyPillModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var tint: Color?
+
+    func body(content: Content) -> some View {
+        content
+            .background {
+                ZStack {
+                    Capsule().fill(
+                        colorScheme == .dark
+                            ? Color.white.opacity(0.09)
+                            : Color.white.opacity(0.62)
+                    )
+                    if let tint {
+                        Capsule().fill(tint.opacity(0.22))
+                    }
                 }
             }
-        }
-        .overlay(Capsule().strokeBorder(.white.opacity(0.22), lineWidth: 0.5))
-        .clipShape(Capsule())
+            .overlay(
+                Capsule().strokeBorder(
+                    .white.opacity(colorScheme == .dark ? 0.18 : 0.55),
+                    lineWidth: 0.5
+                )
+            )
+            .clipShape(Capsule())
     }
 }
 

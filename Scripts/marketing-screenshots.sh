@@ -78,16 +78,16 @@ manual_frame() { # manual_frame <work-dir> <label>
     magick Marketing/background.png -resize "${W}x${H}^" -gravity center -extent "${W}x${H}" \
       \( "$work/.rounded.png" -resize $((W - 440))x \) \
       -gravity south -geometry +0+150 -composite \
-      -font "$work/fonts/Title.ttf" -pointsize 104 -fill white \
-      -gravity north -annotate +0+118 "$title" \
+      -font "$work/fonts/Title.ttf" -pointsize 180 -fill white \
+      -gravity north -annotate +0+140 "$title" \
       "$work/${name}_framed.png"
   done
   rm -f "$work/.rounded.png"
   echo "  ✅ $(ls "$work"/*_framed.png 2>/dev/null | wc -l | xargs) composed"
 }
 
-frame() { # frame <work-dir> <label>
-  local work="$1" label="$2"
+frame() { # frame <work-dir> <label> [title-pointsize] [title-y-offset]
+  local work="$1" label="$2" pointsize="${3:-0}" offset="${4:-0}"
   echo "▶ Framing $label"
   if (cd "$work" && fastlane frameit >/dev/null 2>frameit.log); then
     # frameit writes *_framed.png next to the originals.
@@ -97,6 +97,7 @@ frame() { # frame <work-dir> <label>
       echo "  ⚠️  frameit produced no output for $label (no frame for this device size?) — using raw shots"
       return 1
     fi
+    [ "$pointsize" != "0" ] && add_titles "$work" "$pointsize" "$offset"
     echo "  ✅ $count framed"
   else
     echo "  ⚠️  frameit failed for $label (see $work/frameit.log) — using raw shots"
@@ -104,15 +105,33 @@ frame() { # frame <work-dir> <label>
   fi
 }
 
+# frameit clamps its own title size, so its titles are rendered invisible
+# (Framefile color #FFFFFF00) and the real ones are drawn here at full control.
+add_titles() { # add_titles <work-dir> <pointsize> <y-offset>
+  local work="$1" pointsize="$2" offset="$3"
+  command -v magick >/dev/null || { echo "  ⚠️  ImageMagick missing — titles skipped"; return 0; }
+  for f in "$work"/*_framed.png; do
+    [ -e "$f" ] || continue
+    local name title
+    name=$(basename "$f" _framed.png)
+    title=$(title_for "$name")
+    [ -n "$title" ] || continue
+    magick "$f" \
+      -font "$work/fonts/Title.ttf" -pointsize "$pointsize" -fill white \
+      -gravity north -annotate +0+"$offset" "$title" \
+      "$f"
+  done
+}
+
 mkdir -p Marketing/framed
 if stage "Screenshots/ios/$IPHONE_SLUG" "Marketing/framed/iphone"; then
-  frame "Marketing/framed/iphone" "iPhone" || manual_frame "Marketing/framed/iphone" "iPhone"
+  frame "Marketing/framed/iphone" "iPhone" 96 130 || manual_frame "Marketing/framed/iphone" "iPhone"
 fi
 if [ -d "Screenshots/ios/$IPAD_SLUG" ]; then
   # frameit doesn't know the 13" M5 panel (2064x2752); the 12.9" size (2048x2732)
   # has the same aspect ratio and a frame.
   if stage "Screenshots/ios/$IPAD_SLUG" "Marketing/framed/ipad" "2048x2732"; then
-    frame "Marketing/framed/ipad" "iPad" || manual_frame "Marketing/framed/ipad" "iPad"
+    frame "Marketing/framed/ipad" "iPad" 130 150 || manual_frame "Marketing/framed/ipad" "iPad"
   fi
 else
   echo "⚠️  No iPad shots at Screenshots/ios/$IPAD_SLUG — run with --capture to include iPad"

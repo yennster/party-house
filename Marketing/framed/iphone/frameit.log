@@ -1,0 +1,10 @@
+identify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-81md92.png' @ warning/attribute.c/GetImageBoundingBox/554.
+mogrify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-81md92.png' @ warning/transform.c/CropImage/653.
+identify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-7zvh1u.png' @ warning/attribute.c/GetImageBoundingBox/554.
+mogrify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-7zvh1u.png' @ warning/transform.c/CropImage/653.
+identify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-jdu0dy.png' @ warning/attribute.c/GetImageBoundingBox/554.
+mogrify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-jdu0dy.png' @ warning/transform.c/CropImage/653.
+identify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-tmzpbi.png' @ warning/attribute.c/GetImageBoundingBox/554.
+mogrify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-tmzpbi.png' @ warning/transform.c/CropImage/653.
+identify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-smtbms.png' @ warning/attribute.c/GetImageBoundingBox/554.
+mogrify: geometry does not contain image `/var/folders/lj/n7987v692zq2y3jd87np6ljr0000gn/T/mini_magick20260612-82041-smtbms.png' @ warning/transform.c/CropImage/653.

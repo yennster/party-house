@@ -1,8 +1,17 @@
 # Party House 🪩
 
+[![CI](https://github.com/yennster/party-house/actions/workflows/ci.yml/badge.svg)](https://github.com/yennster/party-house/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-ff2e93.svg)](LICENSE)
+![Platforms](https://img.shields.io/badge/platforms-iOS%2026%20·%20iPadOS%2026%20·%20macOS%2026-7b2cbf.svg)
+
 One beautiful, native app for every smart light in your house — iPhone, iPad, Mac,
 menu bar, and widgets. Built with SwiftUI and Apple's Liquid Glass design for
 iOS 26 / macOS 26.
+
+**Completely free and open source.** No subscriptions, no in-app purchases, no ads,
+no accounts, no locked "pro" tier — and no servers or analytics either. The entire
+app is this MIT-licensed repo: read it, build it yourself, or grab it from the App
+Store. Your lights, your network, your data.
 
 Sweep a gradient across the whole house. Kill every light from a widget. Mix a Hue
 bulb, a Tuya strip behind Home Assistant, and a LIFX lamp into one zone and treat

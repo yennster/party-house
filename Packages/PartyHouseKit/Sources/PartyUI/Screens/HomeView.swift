@@ -69,10 +69,10 @@ public struct HomeView: View {
             HStack {
                 Image(systemName: "plus.circle.fill")
                 Text("New Zone")
-                    .fontWeight(.medium)
+                    .font(PartyFont.cardTitle)
                 Spacer()
                 Text("Mix lights from any system")
-                    .font(.caption)
+                    .font(PartyFont.detail)
                     .foregroundStyle(.secondary)
             }
             .padding(16)

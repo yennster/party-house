@@ -42,7 +42,7 @@ public struct GradientsView: View {
             .overlay(alignment: .bottom) {
                 if let message = applyConfirmation {
                     Text(message)
-                        .font(.callout.weight(.medium))
+                        .font(PartyFont.label)
                         .padding(.horizontal, 18)
                         .padding(.vertical, 10)
                         .glassEffect(.regular.tint(PartyTheme.accent.opacity(0.4)), in: .capsule)
@@ -56,7 +56,7 @@ public struct GradientsView: View {
     private var zonePicker: some View {
         HStack {
             Label("Apply to", systemImage: "scope")
-                .font(.subheadline)
+                .font(PartyFont.sectionCaption)
                 .foregroundStyle(.secondary)
             Spacer()
             Picker("Zone", selection: $selectedZoneID) {
@@ -74,7 +74,7 @@ public struct GradientsView: View {
     private func palettesGrid(title: String, palettes: [Palette], deletable: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
-                .font(.headline)
+                .font(PartyFont.sectionTitle)
 
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 156), spacing: 12)], spacing: 12) {
                 ForEach(palettes) { palette in
@@ -84,7 +84,7 @@ public struct GradientsView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             PaletteStrip(palette: palette, height: 44)
                             Text(palette.name)
-                                .font(.subheadline.weight(.medium))
+                                .font(PartyFont.label)
                                 .lineLimit(1)
                         }
                         .padding(14)
@@ -118,9 +118,9 @@ public struct GradientsView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Import CSS Gradient")
-                        .font(.headline)
+                        .font(PartyFont.cardTitle)
                     Text("Paste any linear-gradient(…) or color list")
-                        .font(.caption)
+                        .font(PartyFont.detail)
                         .foregroundStyle(.secondary)
                 }
 
