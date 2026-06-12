@@ -58,6 +58,9 @@ XCUITest captures → fastlane frameit. No hardware, no Photoshop.*
 - **iCloud sync** — pair once, use everywhere: connections, zones, and palettes sync
   via iCloud Key-Value Storage; the Hue app key and HA token travel in iCloud
   Keychain, end-to-end encrypted.
+- **Looks right everywhere** — full light and dark mode support with an in-app
+  System/Light/Dark override, one unified type scale, a borderless glass window on
+  Mac, and app icon variants for light, dark, and tinted home screens.
 
 ## Project layout
 

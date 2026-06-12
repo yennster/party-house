@@ -78,16 +78,17 @@ need the VPN up too. Tailscale's iOS app can keep the tunnel up on demand.
 
 ## Which one?
 
-| | Nabu Casa | Cloudflare Tunnel | Tailscale |
-|---|---|---|---|
-| Cost | ~$6.50/mo | Free (domain ~$10/yr) | Free |
-| Setup time | 5 min | 30–45 min | 15 min |
-| Open ports | None | None | None |
-| Works without client app | ✅ | ✅ | ❌ (VPN must be on) |
-| Supports HA project | ✅ | — | — |
+| | Nabu Casa | Cloudflare Tunnel | Own domain / proxy | Tailscale |
+|---|---|---|---|---|
+| Cost | ~$6.50/mo | Free (domain ~$10/yr) | Free (domain ~$10/yr) | Free |
+| Setup time | 5 min | 30–45 min | varies (already done?) | 15 min |
+| Open ports | None | None | Depends on setup | None |
+| Works without client app | ✅ | ✅ | ✅ | ❌ (VPN must be on) |
+| Supports HA project | ✅ | — | — | — |
 
 If you just want it to work: **Nabu Casa**. If you like tinkering and own a domain:
-**Cloudflare Tunnel**. If you want nothing public at all: **Tailscale**.
+**Cloudflare Tunnel**. If HA is already on your own address: **just use it**. If you
+want nothing public at all: **Tailscale**.
 
 ## A note on tokens
 
