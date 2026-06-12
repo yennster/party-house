@@ -11,7 +11,9 @@ let size = 1024
 let scriptDirectory = URL(fileURLWithPath: CommandLine.arguments[0]).deletingLastPathComponent()
 let repoRoot = scriptDirectory.deletingLastPathComponent()
 
-func makeContext() -> CGContext {
+/// App Store icons must be fully opaque (no alpha channel); only the tinted
+/// variant and the macOS squircle set are allowed transparency.
+func makeContext(opaque: Bool = false) -> CGContext {
     CGContext(
         data: nil,
         width: size,
@@ -19,7 +21,7 @@ func makeContext() -> CGContext {
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: CGColorSpace(name: CGColorSpace.sRGB)!,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        bitmapInfo: (opaque ? CGImageAlphaInfo.noneSkipLast : CGImageAlphaInfo.premultipliedLast).rawValue
     )!
 }
 
@@ -32,9 +34,9 @@ func color(_ hex: UInt32, alpha: CGFloat = 1) -> CGColor {
     )
 }
 
-/// The white glyph layer: glow, house silhouette (door punched to transparency),
-/// and disco sparkles. Drawn over any background — or none, for the tinted icon.
-func drawForeground(in ctx: CGContext, rect: CGRect, withGlow: Bool = true) {
+/// The white glyph layer: glow, house silhouette, and disco sparkles. The door is
+/// punched to transparency when allowed, or filled dark for opaque icons.
+func drawForeground(in ctx: CGContext, rect: CGRect, withGlow: Bool = true, punchDoor: Bool = true) {
     if withGlow {
         let glow = CGGradient(
             colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
@@ -73,14 +75,19 @@ func drawForeground(in ctx: CGContext, rect: CGRect, withGlow: Bool = true) {
     ctx.addPath(house)
     ctx.fillPath()
 
-    // Door — punched out so the backdrop shows through.
+    // Door — punched out where transparency is allowed, filled dark otherwise.
     let doorW = w * 0.10
     let doorH = h * 0.13
     let doorRect = CGRect(x: rect.midX - doorW / 2, y: baseY, width: doorW, height: doorH)
-    ctx.setBlendMode(.clear)
+    if punchDoor {
+        ctx.setBlendMode(.clear)
+    } else {
+        ctx.setFillColor(color(0x2b1a52))
+    }
     ctx.addPath(CGPath(roundedRect: doorRect, cornerWidth: doorW * 0.45, cornerHeight: doorW * 0.45, transform: nil))
     ctx.fillPath()
     ctx.setBlendMode(.normal)
+    ctx.setFillColor(color(0xffffff))
 
     // Disco sparkles.
     ctx.setFillColor(color(0xffffff, alpha: 0.95))
@@ -139,17 +146,17 @@ func resized(_ image: CGImage, to pixel: Int) -> CGImage {
 let fullRect = CGRect(x: 0, y: 0, width: size, height: size)
 let iosSet = repoRoot.appendingPathComponent("Apps/iOS/Assets.xcassets/AppIcon.appiconset")
 
-// Light (default): the party gradient.
-let lightCtx = makeContext()
+// Light (default): the party gradient. Fully opaque — App Store requirement.
+let lightCtx = makeContext(opaque: true)
 drawBackground(in: lightCtx, rect: fullRect, colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)])
-drawForeground(in: lightCtx, rect: fullRect)
+drawForeground(in: lightCtx, rect: fullRect, punchDoor: false)
 let lightIcon = lightCtx.makeImage()!
 writePNG(lightIcon, to: iosSet.appendingPathComponent("AppIcon-1024.png"))
 
 // Dark appearance: same glyph over a deep night gradient.
-let darkCtx = makeContext()
+let darkCtx = makeContext(opaque: true)
 drawBackground(in: darkCtx, rect: fullRect, colors: [color(0x48103f), color(0x271055), color(0x100b26)])
-drawForeground(in: darkCtx, rect: fullRect)
+drawForeground(in: darkCtx, rect: fullRect, punchDoor: false)
 writePNG(darkCtx.makeImage()!, to: iosSet.appendingPathComponent("AppIcon-1024-dark.png"))
 
 // Tinted/clear appearance: grayscale glyph on transparency — the system supplies

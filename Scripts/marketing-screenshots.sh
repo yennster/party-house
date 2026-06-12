@@ -15,7 +15,7 @@ cd "$(dirname "$0")/.."
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-IPHONE_DEVICE="${IPHONE_DEVICE:-iPhone 17 Pro}"
+IPHONE_DEVICE="${IPHONE_DEVICE:-iPhone 17 Pro Max}"
 IPAD_DEVICE="${IPAD_DEVICE:-iPad Pro 13-inch (M5)}"
 
 if [ "${1:-}" = "--capture" ]; then
