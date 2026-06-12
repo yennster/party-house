@@ -158,11 +158,26 @@ let tintedCtx = makeContext()
 drawForeground(in: tintedCtx, rect: fullRect, withGlow: false)
 writePNG(tintedCtx.makeImage()!, to: iosSet.appendingPathComponent("AppIcon-1024-tinted.png"))
 
-// macOS: full-bleed light artwork; Tahoe masks and glassifies legacy icons itself.
+// macOS: artwork pre-masked to the Tahoe squircle at FULL canvas size (zero
+// margin), so the icon fills its Dock tile instead of floating in the
+// compatibility tray with gaps.
+let macCtx = makeContext()
+let squircle = CGPath(
+    roundedRect: fullRect,
+    cornerWidth: fullRect.width * 0.2256,
+    cornerHeight: fullRect.width * 0.2256,
+    transform: nil
+)
+macCtx.addPath(squircle)
+macCtx.clip()
+drawBackground(in: macCtx, rect: fullRect, colors: [color(0xff2e93), color(0x7b2cbf), color(0x2b1a78)])
+drawForeground(in: macCtx, rect: fullRect)
+let macIcon = macCtx.makeImage()!
+
 let macSet = repoRoot.appendingPathComponent("Apps/macOS/Assets.xcassets/AppIcon.appiconset")
 for (points, scale) in [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), (256, 1), (256, 2), (512, 1), (512, 2)] {
     let pixels = points * scale
-    writePNG(resized(lightIcon, to: pixels), to: macSet.appendingPathComponent("AppIcon-\(points)@\(scale)x.png"))
+    writePNG(resized(macIcon, to: pixels), to: macSet.appendingPathComponent("AppIcon-\(points)@\(scale)x.png"))
 }
 
 print("done")

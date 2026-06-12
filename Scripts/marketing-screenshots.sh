@@ -107,31 +107,35 @@ frame() { # frame <work-dir> <label> [title-pointsize] [title-y-offset]
 
 # frameit clamps its own title size, so its titles are rendered invisible
 # (Framefile color #FFFFFF00) and the real ones are drawn here at full control.
-add_titles() { # add_titles <work-dir> <pointsize> <y-offset>
-  local work="$1" pointsize="$2" offset="$3"
+add_titles() { # add_titles <work-dir> <box-height> <y-offset>
+  local work="$1" boxheight="$2" offset="$3"
   command -v magick >/dev/null || { echo "  ⚠️  ImageMagick missing — titles skipped"; return 0; }
   for f in "$work"/*_framed.png; do
     [ -e "$f" ] || continue
-    local name title
+    local name title width boxwidth
     name=$(basename "$f" _framed.png)
     title=$(title_for "$name")
     [ -n "$title" ] || continue
+    width=$(sips -g pixelWidth "$f" | awk '/pixelWidth/{print $2}')
+    boxwidth=$((width * 88 / 100))
+    # caption: auto-fits the text to the box — long titles shrink, short titles max out.
     magick "$f" \
-      -font "$work/fonts/Title.ttf" -pointsize "$pointsize" -fill white \
-      -gravity north -annotate +0+"$offset" "$title" \
+      \( -background none -fill white -font "$work/fonts/Title.ttf" \
+         -size "${boxwidth}x${boxheight}" -gravity center caption:"$title" \) \
+      -gravity north -geometry +0+"$offset" -composite \
       "$f"
   done
 }
 
 mkdir -p Marketing/framed
 if stage "Screenshots/ios/$IPHONE_SLUG" "Marketing/framed/iphone"; then
-  frame "Marketing/framed/iphone" "iPhone" 96 130 || manual_frame "Marketing/framed/iphone" "iPhone"
+  frame "Marketing/framed/iphone" "iPhone" 150 90 || manual_frame "Marketing/framed/iphone" "iPhone"
 fi
 if [ -d "Screenshots/ios/$IPAD_SLUG" ]; then
   # frameit doesn't know the 13" M5 panel (2064x2752); the 12.9" size (2048x2732)
   # has the same aspect ratio and a frame.
   if stage "Screenshots/ios/$IPAD_SLUG" "Marketing/framed/ipad" "2048x2732"; then
-    frame "Marketing/framed/ipad" "iPad" 130 150 || manual_frame "Marketing/framed/ipad" "iPad"
+    frame "Marketing/framed/ipad" "iPad" 170 100 || manual_frame "Marketing/framed/ipad" "iPad"
   fi
 else
   echo "⚠️  No iPad shots at Screenshots/ios/$IPAD_SLUG — run with --capture to include iPad"
