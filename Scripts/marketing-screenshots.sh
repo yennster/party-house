@@ -67,7 +67,9 @@ manual_frame() { # manual_frame <work-dir> <label>
     case "$name" in *_framed) continue ;; esac
     local title
     title=$(title_for "$name")
-    local W=3360 H=2520
+    # 2880x1800 is an accepted Mac App Store size, so framed Mac marketing
+    # images can be uploaded directly by deliver.
+    local W=2880 H=1800
     # Rounded corners on the shot.
     magick "$f" \
       \( +clone -alpha extract \
@@ -76,10 +78,11 @@ manual_frame() { # manual_frame <work-dir> <label>
          \( +clone -flop \) -compose Multiply -composite \
       \) -alpha off -compose CopyOpacity -composite "$work/.rounded.png"
     magick Marketing/background.png -resize "${W}x${H}^" -gravity center -extent "${W}x${H}" \
-      \( "$work/.rounded.png" -resize $((W - 440))x \) \
-      -gravity south -geometry +0+150 -composite \
-      -font "$work/fonts/Title.ttf" -pointsize 180 -fill white \
-      -gravity north -annotate +0+140 "$title" \
+      \( "$work/.rounded.png" -resize $((W - 600))x \) \
+      -gravity south -geometry +0+80 -composite \
+      \( -background none -fill white -font "$work/fonts/Title.ttf" \
+         -size "$((W - 700))x150" -gravity center caption:"$title" \) \
+      -gravity north -geometry +0+62 -composite \
       "$work/${name}_framed.png"
   done
   rm -f "$work/.rounded.png"
