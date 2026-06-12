@@ -122,6 +122,7 @@ public struct MenuBarContentView: View {
         }
         .padding(16)
         .frame(width: 320)
+        .partyAppearance()
     }
 }
 #endif

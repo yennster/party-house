@@ -82,7 +82,18 @@ public struct ZoneEditorView: View {
 
                 if selected.count > 1 {
                     Section {
-                        selectedOrderEditor
+                        // ForEach directly in the Form — a nested List here renders
+                        // gigantic stretched rows.
+                        ForEach(selected, id: \.self) { id in
+                            HStack(spacing: 10) {
+                                Image(systemName: "line.3.horizontal")
+                                    .foregroundStyle(.tertiary)
+                                Text(lightName(for: id))
+                            }
+                        }
+                        .onMove { source, destination in
+                            selected.move(fromOffsets: source, toOffset: destination)
+                        }
                     } header: {
                         Text("Gradient order")
                     } footer: {
@@ -142,21 +153,8 @@ public struct ZoneEditorView: View {
         .buttonStyle(.plain)
     }
 
-    private var selectedOrderEditor: some View {
-        let byID = Dictionary(uniqueKeysWithValues: store.lights.map { ($0.id, $0) })
-        return List {
-            ForEach(selected, id: \.self) { id in
-                HStack {
-                    Image(systemName: "line.3.horizontal")
-                        .foregroundStyle(.tertiary)
-                    Text(byID[id]?.name ?? id.raw)
-                }
-            }
-            .onMove { source, destination in
-                selected.move(fromOffsets: source, toOffset: destination)
-            }
-        }
-        .frame(minHeight: CGFloat(selected.count) * 38 + 10)
+    private func lightName(for id: LightID) -> String {
+        store.lights.first { $0.id == id }?.name ?? id.raw
     }
 
     private func save() {

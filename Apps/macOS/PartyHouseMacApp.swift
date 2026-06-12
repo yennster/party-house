@@ -7,6 +7,7 @@ import PartyUI
 struct PartyHouseMacApp: App {
     @State private var appEnvironment = AppEnvironment()
     @AppStorage("hideDockIcon") private var hideDockIcon = false
+    @AppStorage("menuBarExtraShown") private var menuBarExtraShown = true
 
     private var reconnect: ReconnectAction {
         ReconnectAction { [appEnvironment] in
@@ -29,8 +30,9 @@ struct PartyHouseMacApp: App {
                 }
         }
         .defaultSize(width: 1100, height: 760)
+        .windowStyle(.hiddenTitleBar)
 
-        MenuBarExtra("Party House", systemImage: "party.popper.fill") {
+        MenuBarExtra("Party House", systemImage: "party.popper.fill", isInserted: $menuBarExtraShown) {
             MenuBarContentView()
                 .environment(appEnvironment.lightsStore)
                 .environment(\.partyReconnect, reconnect)
@@ -45,6 +47,7 @@ struct PartyHouseMacApp: App {
                 .environment(appEnvironment.lightsStore)
                 .environment(\.partyReconnect, reconnect)
                 .frame(minWidth: 540, minHeight: 480)
+                .partyAppearance()
         }
     }
 }

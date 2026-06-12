@@ -13,6 +13,51 @@ public extension PHColor {
     var swiftUIColor: Color { Color(self) }
 }
 
+// MARK: - Appearance override
+
+/// User-selectable appearance: follow the OS, or force light/dark in-app.
+public enum PartyAppearance: String, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
+
+    public static let storageKey = "appearancePreference"
+
+    public var id: String { rawValue }
+
+    public var label: String {
+        switch self {
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+
+    public var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
+struct PartyAppearanceModifier: ViewModifier {
+    @AppStorage(PartyAppearance.storageKey) private var rawAppearance = PartyAppearance.system.rawValue
+
+    func body(content: Content) -> some View {
+        content.preferredColorScheme(PartyAppearance(rawValue: rawAppearance)?.colorScheme)
+    }
+}
+
+public extension View {
+    /// Applies the user's in-app light/dark override (Settings → Appearance).
+    /// Attach to every scene root.
+    func partyAppearance() -> some View {
+        modifier(PartyAppearanceModifier())
+    }
+}
+
 // MARK: - Theme
 
 /// The app-wide type scale. Every custom surface (cards, tiles, chips, menubar)

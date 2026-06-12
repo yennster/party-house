@@ -31,5 +31,6 @@ public struct RootView: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         #endif
         .tint(PartyTheme.accent)
+        .partyAppearance()
     }
 }

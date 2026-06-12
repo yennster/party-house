@@ -10,6 +10,19 @@ public struct SettingsView: View {
     @State private var showingHueSetup = false
     @State private var showingHASetup = false
     @State private var showingLIFXSetup = false
+    @AppStorage(PartyAppearance.storageKey) private var rawAppearance = PartyAppearance.system.rawValue
+    @AppStorage("menuBarExtraShown") private var menuBarExtraShown = true
+
+    private var appearanceBinding: Binding<PartyAppearance> {
+        Binding(
+            get: { PartyAppearance(rawValue: rawAppearance) ?? .system },
+            set: { rawAppearance = $0.rawValue }
+        )
+    }
+
+    private var menuBarBinding: Binding<Bool> {
+        Binding(get: { menuBarExtraShown }, set: { menuBarExtraShown = $0 })
+    }
 
     public init() {}
 
@@ -33,6 +46,19 @@ public struct SettingsView: View {
 
                 if !store.autoSuppressedLights.isEmpty || !store.dedupeOverrides.alwaysShow.isEmpty {
                     duplicatesSection
+                }
+
+                Section("Appearance") {
+                    Picker("Theme", selection: appearanceBinding) {
+                        ForEach(PartyAppearance.allCases) { appearance in
+                            Text(appearance.label).tag(appearance)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    #if os(macOS)
+                    Toggle("Show menu bar icon", isOn: menuBarBinding)
+                    #endif
                 }
 
                 Section("iCloud Sync") {

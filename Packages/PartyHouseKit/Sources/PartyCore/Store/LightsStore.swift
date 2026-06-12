@@ -39,10 +39,11 @@ public final class LightsStore {
 
         eventTasks[id]?.cancel()
         eventTasks[id] = Task { [weak self] in
+            // This Task inherits MainActor isolation, so handle() needs no await.
             let stream = await provider.events()
             for await event in stream {
                 guard let self else { return }
-                await self.handle(event, from: id)
+                self.handle(event, from: id)
             }
         }
 
