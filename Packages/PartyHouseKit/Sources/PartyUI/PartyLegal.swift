@@ -13,7 +13,7 @@ public enum PartyLegal {
     Party House is an independent, third-party app. It is not affiliated with, \
     endorsed by, or sponsored by Signify (Philips Hue), the Open Home Foundation \
     or Nabu Casa (Home Assistant), or LIFX / Feit Electric. “Philips Hue,” \
-    “Home Assistant,” and “LIFX” are trademarks of their respective owners, used \
-    here only to describe compatibility.
+    “Home Assistant,” “LIFX,” and all other product and company names are \
+    trademarks of their respective owners, used here only to describe compatibility.
     """
 }
