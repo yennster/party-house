@@ -72,11 +72,17 @@ public struct SettingsView: View {
                     }
                 }
 
-                Section("About") {
+                Section {
                     LabeledContent("Version") {
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—")
                     }
                     Link("Party House on GitHub", destination: URL(string: "https://github.com/yennster/party-house")!)
+                } header: {
+                    Text("About")
+                } footer: {
+                    Text(PartyLegal.disclaimer)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
             }
             .formStyle(.grouped)
@@ -235,10 +241,16 @@ struct OtherBrandsView: View {
                 Text("Party House controls Philips Hue and LIFX directly. Every other brand — Govee, WiZ, Tuya/Smart Life, Nanoleaf, IKEA, Matter bulbs — comes in through Home Assistant: add the brand's integration in Home Assistant, and its lights appear here automatically, ready for zones and gradients.")
                     .font(.callout)
             }
-            Section("Set up in Home Assistant") {
+            Section {
                 step("1", "In Home Assistant, open Settings → Devices & Services → Add Integration.")
                 step("2", "Add your brand (e.g. “Tuya” or “Govee”) and finish its sign-in.")
                 step("3", "Back in Party House, pull to refresh — the new lights show up under Home Assistant.")
+            } header: {
+                Text("Set up in Home Assistant")
+            } footer: {
+                Text(PartyLegal.disclaimer)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
         }
         .navigationTitle("Other Brands")

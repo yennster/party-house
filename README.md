@@ -146,6 +146,18 @@ fewer fragile cloud APIs in the app and one consistent path for brands the
 maintainer can't test against. Add the brand integration in HA and the lights appear
 in Party House automatically.
 
+## Trademarks & disclaimer
+
+Party House is an independent, third-party app. It is **not affiliated with,
+endorsed by, or sponsored by** Signify (Philips Hue), the Open Home Foundation or
+Nabu Casa (Home Assistant), or LIFX / Feit Electric. It controls only smart lights
+**you already own**, on **your own** network, using each vendor's publicly
+published API and credentials **you** supply. It bundles no third-party logos.
+
+"Philips Hue," "Home Assistant," "LIFX," and all other product and company names
+are trademarks of their respective owners, used here only to describe
+compatibility.
+
 ## License
 
 [MIT](LICENSE)

@@ -1,5 +1,5 @@
 "01-home" = "One home. Every light.";
-"02-zone" = "Hue + Home Assistant + LIFX";
+"02-zone" = "Mix any lights into one zone";
 "02-zone-gradient" = "Sweep a gradient";
 "03-zone-gradient" = "Sweep a gradient";
 "03-gradients" = "Party palettes + CSS";

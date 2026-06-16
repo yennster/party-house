@@ -36,3 +36,11 @@ or any third party.
 
 Questions? Open an issue at https://github.com/yennster/party-house/issues or email
 jenny+partyhouse@jennyplunkett.me.
+
+## Trademarks & disclaimer
+
+Party House is an independent, third-party app and is not affiliated with, endorsed
+by, or sponsored by Signify (Philips Hue), the Open Home Foundation or Nabu Casa
+(Home Assistant), or LIFX / Feit Electric. "Philips Hue," "Home Assistant," "LIFX,"
+and all other product and company names are trademarks of their respective owners,
+used here only to describe compatibility.
