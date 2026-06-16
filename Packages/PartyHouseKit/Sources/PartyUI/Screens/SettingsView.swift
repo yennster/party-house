@@ -72,11 +72,17 @@ public struct SettingsView: View {
                     }
                 }
 
-                Section("About") {
+                Section {
                     LabeledContent("Version") {
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—")
                     }
                     Link("Party House on GitHub", destination: URL(string: "https://github.com/yennster/party-house")!)
+                } header: {
+                    Text("About")
+                } footer: {
+                    Text(PartyLegal.disclaimer)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
             }
             .formStyle(.grouped)
