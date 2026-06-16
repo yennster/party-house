@@ -80,38 +80,11 @@ impersonate, or bundle anything from these vendors.
 
 ---
 
-## App Review Information — reply note
+## App Review Information — reply note + documentation checklist
 
-Paste this into **App Store Connect → App Review Information → Notes**, and reply
-in Resolution Center pointing to it. Attach the evidence files (Hue dev-program
-confirmation screenshot/PDF, any vendor emails).
-
-> Party House is a free, open-source, independent third-party app. It does not
-> collect any user data and has no accounts, servers, ads, or purchases.
->
-> Re: Guideline 5.2.1. The app controls only smart lights that the *user already
-> owns*, on the *user's own* local network, using credentials the user supplies.
-> It connects via each manufacturer's **publicly published API**:
->
-> • Philips Hue — local CLIP v2 API. We are registered in the Philips Hue
->   Developer Program, whose terms grant the right to create apps that operate
->   with the Hue bridge (confirmation attached).
-> • Home Assistant — open-source (Apache 2.0) software running on the user's own
->   server, via its documented WebSocket API. Written permission from the Open
->   Home Foundation is attached / requested.
-> • LIFX — the LIFX LAN protocol, which LIFX publishes for third-party client
->   applications.
->
-> The app ships no third-party logos or trademarks, has a brand-neutral name, and
-> references these products only descriptively to indicate compatibility. A
-> non-affiliation and trademark disclaimer appears in Settings → About and in the
-> App Store description. We believe this constitutes both the necessary
-> authorization and lawful nominative use. We're happy to provide any additional
-> documentation.
->
-> Re: Guideline 2.1. A demo video showing pairing and the full workflow on a
-> physical device is linked below. Demo connection details for review:
-> [HA test URL + long-lived token, or Hue bridge instructions].
+The send-ready reviewer reply and the exact "what to attach" checklist live in
+**[`reviewer-reply.md`](reviewer-reply.md)**. Paste the reply into Resolution
+Center (and mirror it in the Notes field), and attach the evidence it lists.
 
 ---
 
